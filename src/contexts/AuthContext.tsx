@@ -138,25 +138,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     console.log('Attempting Google sign in');
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/`
-      }
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
+      });
 
-    if (error) {
-      console.error('Google sign in error:', error);
+      if (error) {
+        console.error('Google sign in error:', error);
+        toast({
+          title: "Google Sign In Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        console.log('Google sign in initiated successfully');
+      }
+
+      return { error };
+    } catch (err) {
+      console.error('Unexpected error during Google sign in:', err);
       toast({
         title: "Google Sign In Error",
-        description: error.message,
+        description: "Failed to initiate Google sign in. Please try again or use email/password.",
         variant: "destructive",
       });
-    } else {
-      console.log('Google sign in initiated');
+      return { error: err as any };
     }
-
-    return { error };
   };
 
   const signOut = async () => {
