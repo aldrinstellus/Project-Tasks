@@ -5,7 +5,7 @@ import { useKanbanStore } from '@/store/kanban-store';
 import { KanbanList } from './KanbanList';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 
 export function KanbanBoard() {
   const { currentBoard, moveCard, createList } = useKanbanStore();
@@ -97,31 +97,29 @@ export function KanbanBoard() {
         onDragOver={handleDragOver}
         collisionDetection={closestCorners}
       >
-        <div className="flex gap-6 pb-6 min-h-0">
-          <ScrollArea className="flex-1">
-            <div className="flex gap-6 min-w-max">
-              <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
-                {sortedLists.map((list) => (
-                  <KanbanList
-                    key={list.id}
-                    list={list}
-                    activeCardId={activeId}
-                  />
-                ))}
-              </SortableContext>
+        <div className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin">
+          <div className="flex gap-6 min-w-max pr-6">
+            <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
+              {sortedLists.map((list) => (
+                <KanbanList
+                  key={list.id}
+                  list={list}
+                  activeCardId={activeId}
+                />
+              ))}
+            </SortableContext>
 
-              <div className="flex-shrink-0">
-                <Button
-                  onClick={handleAddList}
-                  variant="outline"
-                  className="w-80 h-12 border-dashed border-2 hover:bg-muted/50 transition-colors"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add another list
-                </Button>
-              </div>
+            <div className="flex-shrink-0">
+              <Button
+                onClick={handleAddList}
+                variant="outline"
+                className="w-80 h-12 border-dashed border-2 hover:bg-muted/50 transition-colors"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add another list
+              </Button>
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </DndContext>
     </div>

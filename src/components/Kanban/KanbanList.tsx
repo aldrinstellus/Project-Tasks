@@ -130,7 +130,7 @@ export function KanbanList({ list, activeCardId }: KanbanListProps) {
           </DropdownMenu>
         </div>
 
-        <CardContent className="p-4 pt-0 space-y-3 min-h-[200px] max-h-[600px] overflow-y-auto scrollbar-thin">
+        <CardContent className="p-4 pt-0 space-y-3 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin">
           {sortedCards.map((card) => (
             <KanbanCard
               key={card.id}
