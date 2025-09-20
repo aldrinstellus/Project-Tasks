@@ -11,13 +11,14 @@ export const useKanbanStore = create<BoardState>()(
       currentBoard: null,
 
       // Board actions
-      createBoard: (title: string) => {
+      createBoard: (title: string, userId: string) => {
         const newBoard: Board = {
           id: uuidv4(),
           title,
           lists: [],
           createdAt: new Date(),
           updatedAt: new Date(),
+          userId,
         };
 
         set((state) => ({
@@ -107,6 +108,15 @@ export const useKanbanStore = create<BoardState>()(
       setCurrentBoard: (boardId: string) => {
         const board = get().boards.find((b) => b.id === boardId);
         set({ currentBoard: board || null });
+      },
+
+      loadUserBoards: (userId: string) => {
+        const state = get();
+        const userBoards = state.boards.filter(board => board.userId === userId);
+        set({ 
+          boards: userBoards,
+          currentBoard: userBoards.length > 0 ? userBoards[0] : null
+        });
       },
 
       // List actions

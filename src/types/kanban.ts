@@ -28,6 +28,7 @@ export interface Board {
   lists: List[];
   createdAt: Date;
   updatedAt: Date;
+  userId: string; // Add userId to associate boards with users
 }
 
 export interface BoardState {
@@ -35,10 +36,11 @@ export interface BoardState {
   currentBoard: Board | null;
   
   // Board actions
-  createBoard: (title: string) => void;
+  createBoard: (title: string, userId: string) => void;
   updateBoard: (boardId: string, updates: Partial<Board>) => void;
   deleteBoard: (boardId: string) => void;
   setCurrentBoard: (boardId: string) => void;
+  loadUserBoards: (userId: string) => void; // Load boards for specific user
   
   // List actions
   createList: (boardId: string, title: string) => void;

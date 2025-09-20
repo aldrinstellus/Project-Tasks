@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useKanbanStore } from '@/store/kanban-store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -26,11 +27,12 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { boards, currentBoard, setCurrentBoard, createBoard, deleteBoard } = useKanbanStore();
+  const { user } = useAuth();
 
   const handleCreateBoard = () => {
     const boardName = prompt('Enter board name:');
-    if (boardName?.trim()) {
-      createBoard(boardName.trim());
+    if (boardName?.trim() && user) {
+      createBoard(boardName.trim(), user.id);
     }
   };
 

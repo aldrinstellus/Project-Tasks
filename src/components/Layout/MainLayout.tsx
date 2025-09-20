@@ -3,20 +3,30 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { KanbanBoard } from '@/components/Kanban/KanbanBoard';
 import { useKanbanStore } from '@/store/kanban-store';
+import { useAuth } from '@/contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
 export function MainLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { boards, createBoard, setCurrentBoard } = useKanbanStore();
+  const { boards, createBoard, setCurrentBoard, loadUserBoards } = useKanbanStore();
+  const { user } = useAuth();
 
-  // Initialize with a default board if none exist
+  // Initialize with user boards or create a default board
   useEffect(() => {
-    if (boards.length === 0) {
-      createBoard('My First Board');
-    } else if (!useKanbanStore.getState().currentBoard) {
-      setCurrentBoard(boards[0].id);
+    if (user) {
+      loadUserBoards(user.id);
+      
+      // If no boards exist for this user, create a default one
+      setTimeout(() => {
+        const currentBoards = useKanbanStore.getState().boards;
+        if (currentBoards.length === 0) {
+          createBoard('My First Board', user.id);
+        } else if (!useKanbanStore.getState().currentBoard) {
+          setCurrentBoard(currentBoards[0].id);
+        }
+      }, 100);
     }
-  }, [boards, createBoard, setCurrentBoard]);
+  }, [user, loadUserBoards, createBoard, setCurrentBoard]);
 
   // Handle responsive sidebar on mobile
   useEffect(() => {
