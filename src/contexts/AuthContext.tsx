@@ -36,15 +36,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state change:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          console.log('User authenticated:', session.user.email);
           // Fetch user profile
           setTimeout(() => {
             fetchUserProfile(session.user.id);
           }, 0);
         } else {
+          console.log('User not authenticated');
           setProfile(null);
         }
         setLoading(false);
@@ -113,23 +116,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('Attempting sign in with:', email);
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
+      console.error('Sign in error:', error);
       toast({
         title: "Sign In Error",
         description: error.message,
         variant: "destructive",
       });
+    } else {
+      console.log('Sign in successful');
     }
 
     return { error };
   };
 
   const signInWithGoogle = async () => {
+    console.log('Attempting Google sign in');
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -138,11 +146,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
+      console.error('Google sign in error:', error);
       toast({
         title: "Google Sign In Error",
         description: error.message,
         variant: "destructive",
       });
+    } else {
+      console.log('Google sign in initiated');
     }
 
     return { error };
