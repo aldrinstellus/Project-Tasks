@@ -52,12 +52,12 @@ export function Header() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <div className="w-4 h-4 bg-white rounded-sm"></div>
               </div>
-              <h1 className="text-xl font-bold text-foreground">Project Tasks</h1>
+              <h1 className="text-xl font-bold text-white">Project Tasks</h1>
             </div>
             {currentBoard && (
-              <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
+              <div className="hidden md:flex items-center space-x-2 text-sm text-white/80">
                 <span>/</span>
-                <span className="font-medium">{currentBoard.title}</span>
+                <span className="font-medium text-white">{currentBoard.title}</span>
               </div>
             )}
           </div>
