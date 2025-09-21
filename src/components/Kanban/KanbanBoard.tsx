@@ -1,6 +1,6 @@
 import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, closestCorners } from '@dnd-kit/core';
 import { arrayMove, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useKanbanStore } from '@/store/kanban-store';
 import { KanbanList } from './KanbanList';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,24 @@ import { Plus } from 'lucide-react';
 export function KanbanBoard() {
   const { currentBoard, moveCard, createList } = useKanbanStore();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Enable horizontal scrolling with mouse wheel
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Only handle horizontal scrolling when there's horizontal content to scroll
+      if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
+        e.preventDefault();
+        scrollContainer.scrollLeft += e.deltaY;
+      }
+    };
+
+    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
+    return () => scrollContainer.removeEventListener('wheel', handleWheel);
+  }, [currentBoard]);
 
   if (!currentBoard) {
     return (
@@ -97,7 +115,7 @@ export function KanbanBoard() {
         onDragOver={handleDragOver}
         collisionDetection={closestCorners}
       >
-        <div className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin">
+        <div ref={scrollContainerRef} className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin">
           <div className="flex gap-6 min-w-max pr-6">
             <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
               {sortedLists.map((list) => (
