@@ -11,9 +11,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useKanbanStore } from '@/store/kanban-store';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
+import { SearchModal } from '@/components/Search/SearchModal';
+import { SearchTrigger } from '@/components/Search/SearchTrigger';
 
 export function Header() {
   const [darkMode, setDarkMode] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { currentBoard, createBoard } = useKanbanStore();
   const { user, profile, signOut } = useAuth();
 
@@ -84,6 +87,8 @@ export function Header() {
           </div>
 
           <div className="flex items-center space-x-3">
+            <SearchTrigger onClick={() => setSearchOpen(true)} />
+            
             <Button
               onClick={handleCreateBoard}
               size="sm"
@@ -143,6 +148,8 @@ export function Header() {
           </div>
         </div>
       </div>
+      
+      <SearchModal open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }
