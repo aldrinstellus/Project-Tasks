@@ -28,7 +28,7 @@ export function SearchTrigger({ onClick, className }: SearchTriggerProps) {
       size="sm"
       onClick={onClick}
       className={cn(
-        "btn-ghost-hover group relative flex items-center justify-center gap-3 min-w-[200px] px-4 bg-background/10 border border-white/30 dark:border-border/40 backdrop-blur-sm",
+        "btn-ghost-hover group relative flex items-center justify-center gap-3 min-w-[200px] px-4 bg-background/10 border border-gray-400/50 backdrop-blur-sm",
         className
       )}
     >
