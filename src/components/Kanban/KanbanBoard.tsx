@@ -270,12 +270,15 @@ export function KanbanBoard() {
     const activeId = active.id as string;
     const overId = over.id as string;
 
+    // Extract the actual card ID by removing the "card-" prefix
+    const actualCardId = activeId.startsWith('card-') ? activeId.replace('card-', '') : activeId;
+
     // If dropping on a list (not a card), move to end of that list
     if (overId.startsWith('list-')) {
       const listId = overId.replace('list-', '');
       const targetList = currentBoard.lists.find(list => list.id === listId);
       if (targetList) {
-        moveCard(activeId, listId, targetList.cards.length);
+        moveCard(actualCardId, listId, targetList.cards.length);
       }
     }
     // If dropping on a card, move to that position
@@ -286,7 +289,7 @@ export function KanbanBoard() {
       for (const list of currentBoard.lists) {
         const cardIndex = list.cards.findIndex(card => card.id === cardId);
         if (cardIndex !== -1) {
-          moveCard(activeId, list.id, cardIndex);
+          moveCard(actualCardId, list.id, cardIndex);
           break;
         }
       }
