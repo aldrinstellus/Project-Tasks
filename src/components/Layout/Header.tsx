@@ -15,30 +15,21 @@ import { SearchModal } from '@/components/Search/SearchModal';
 import { SearchTrigger } from '@/components/Search/SearchTrigger';
 
 export function Header() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true); // Default to dark mode
   const [searchOpen, setSearchOpen] = useState(false);
   const { currentBoard, createBoard } = useKanbanStore();
   const { user, profile, signOut } = useAuth();
 
   useEffect(() => {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    setDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    }
+    // Always set dark mode as default
+    setDarkMode(true);
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
   }, []);
 
   const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
+    // Disable light mode - do nothing
+    return;
   };
 
   const handleSignOut = async () => {
@@ -102,10 +93,11 @@ export function Header() {
               variant="ghost"
               size="sm"
               onClick={toggleDarkMode}
-              className="btn-ghost-hover"
+              className="btn-ghost-hover cursor-not-allowed opacity-50"
+              disabled
             >
               {darkMode ? (
-                <Sun className="w-4 h-4" />
+                <Sun className="w-4 h-4 opacity-30" />
               ) : (
                 <Moon className="w-4 h-4" />
               )}
