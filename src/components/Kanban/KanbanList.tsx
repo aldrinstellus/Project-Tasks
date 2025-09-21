@@ -114,18 +114,18 @@ export function KanbanList({ list, activeCardId }: KanbanListProps) {
           )}
           
           <DropdownMenu>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                     <MoreHorizontal className="w-3 h-3" />
                   </Button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>List actions</p>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>List actions</p>
+                </TooltipContent>
+              </Tooltip>
+            </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
                 <Edit2 className="w-4 h-4 mr-2" />
