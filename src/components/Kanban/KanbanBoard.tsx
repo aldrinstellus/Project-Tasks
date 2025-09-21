@@ -1,6 +1,6 @@
 import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, closestCorners } from '@dnd-kit/core';
 import { arrayMove, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useKanbanStore } from '@/store/kanban-store';
 import { KanbanList } from './KanbanList';
 import { Button } from '@/components/ui/button';
@@ -10,24 +10,161 @@ import { Plus } from 'lucide-react';
 export function KanbanBoard() {
   const { currentBoard, moveCard, createList } = useKanbanStore();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [isPanning, setIsPanning] = useState(false);
+  const [lastPanPoint, setLastPanPoint] = useState({ x: 0, y: 0 });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>();
 
-  // Enable horizontal scrolling with mouse wheel
+  // Enhanced horizontal scrolling with mouse wheel and trackpad
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
 
     const handleWheel = (e: WheelEvent) => {
-      // Only handle horizontal scrolling when there's horizontal content to scroll
-      if (scrollContainer.scrollWidth > scrollContainer.clientWidth) {
-        e.preventDefault();
-        scrollContainer.scrollLeft += e.deltaY;
+      const hasHorizontalScroll = scrollContainer.scrollWidth > scrollContainer.clientWidth;
+      if (!hasHorizontalScroll) return;
+
+      e.preventDefault();
+      
+      // Support both wheel directions and Shift+wheel
+      let scrollAmount = 0;
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        scrollAmount = e.deltaX;
+      } else if (e.shiftKey || Math.abs(e.deltaY) > 0) {
+        scrollAmount = e.deltaY;
+      }
+
+      if (scrollAmount !== 0) {
+        // Smooth scrolling with momentum
+        const targetScroll = scrollContainer.scrollLeft + scrollAmount;
+        scrollContainer.scrollTo({
+          left: targetScroll,
+          behavior: 'auto'
+        });
       }
     };
 
     scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
     return () => scrollContainer.removeEventListener('wheel', handleWheel);
   }, [currentBoard]);
+
+  // Click-and-drag panning functionality
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    // Only start panning on left mouse button and not on draggable elements
+    if (e.button !== 0) return;
+    
+    const target = e.target as HTMLElement;
+    const isOnDraggable = target.closest('[data-sortable-item]') || 
+                         target.closest('[data-dnd-item]') || 
+                         target.closest('button') ||
+                         target.closest('input') ||
+                         target.closest('textarea');
+    
+    if (isOnDraggable || activeId) return;
+
+    e.preventDefault();
+    setIsPanning(true);
+    setLastPanPoint({ x: e.clientX, y: e.clientY });
+    
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = 'grabbing';
+    }
+  }, [activeId]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isPanning || !scrollContainerRef.current) return;
+
+    e.preventDefault();
+    
+    const deltaX = lastPanPoint.x - e.clientX;
+    const newScrollLeft = scrollContainerRef.current.scrollLeft + deltaX;
+    
+    // Cancel any existing animation frame
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+    
+    // Use RAF for smooth scrolling
+    rafRef.current = requestAnimationFrame(() => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollLeft = newScrollLeft;
+      }
+    });
+    
+    setLastPanPoint({ x: e.clientX, y: e.clientY });
+  }, [isPanning, lastPanPoint]);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isPanning) return;
+    
+    setIsPanning(false);
+    
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = '';
+    }
+  }, [isPanning]);
+
+  // Handle mouse leave to stop panning
+  const handleMouseLeave = useCallback(() => {
+    if (isPanning) {
+      setIsPanning(false);
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.cursor = '';
+      }
+    }
+  }, [isPanning]);
+
+  // Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
+
+  // Keyboard navigation for horizontal scrolling
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!scrollContainer || e.target !== scrollContainer) return;
+      
+      const scrollStep = 200;
+      const pageStep = scrollContainer.clientWidth * 0.8;
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          scrollContainer.scrollBy({ left: -scrollStep, behavior: 'smooth' });
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          scrollContainer.scrollBy({ left: scrollStep, behavior: 'smooth' });
+          break;
+        case 'Home':
+          e.preventDefault();
+          scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          break;
+        case 'End':
+          e.preventDefault();
+          scrollContainer.scrollTo({ left: scrollContainer.scrollWidth, behavior: 'smooth' });
+          break;
+        case 'PageUp':
+          e.preventDefault();
+          scrollContainer.scrollBy({ left: -pageStep, behavior: 'smooth' });
+          break;
+        case 'PageDown':
+          e.preventDefault();
+          scrollContainer.scrollBy({ left: pageStep, behavior: 'smooth' });
+          break;
+      }
+    };
+
+    scrollContainer.addEventListener('keydown', handleKeyDown);
+    return () => scrollContainer.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   if (!currentBoard) {
     return (
@@ -115,7 +252,18 @@ export function KanbanBoard() {
         onDragOver={handleDragOver}
         collisionDetection={closestCorners}
       >
-        <div ref={scrollContainerRef} className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin">
+        <div 
+          ref={scrollContainerRef} 
+          className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin cursor-grab active:cursor-grabbing select-none"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          tabIndex={0}
+          style={{ 
+            cursor: isPanning ? 'grabbing' : scrollContainerRef.current?.scrollWidth > scrollContainerRef.current?.clientWidth ? 'grab' : 'default'
+          }}
+        >
           <div className="flex gap-6 min-w-max pr-6">
             <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
               {sortedLists.map((list) => (
