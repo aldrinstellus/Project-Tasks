@@ -47,11 +47,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     <div
       className={cn(
         "bg-card border-r border-border transition-all duration-300 flex flex-col",
-        collapsed ? "w-12" : "w-64"
+        collapsed ? "w-16" : "w-64"
       )}
     >
       {/* Header */}
-      <div className="p-4 border-b border-border">
+      <div className={cn("border-b border-border", collapsed ? "p-2" : "p-4")}>
         <div className="flex items-center justify-between">
           {!collapsed && (
             <div className="flex items-center space-x-2">
@@ -63,7 +63,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="btn-ghost-hover hover:bg-primary/10"
+            className={cn(
+              "btn-ghost-hover hover:bg-primary/10 transition-colors",
+              collapsed ? "w-12 h-12 p-0" : ""
+            )}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? (
@@ -76,13 +79,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </div>
 
       {/* Boards List */}
-      <ScrollArea className="flex-1 p-2">
-        <div className="space-y-1">
+      <ScrollArea className={cn("flex-1", collapsed ? "p-2" : "p-2")}>
+        <div className={cn("space-y-1", collapsed ? "space-y-2" : "")}>
           {!collapsed && (
             <Button
               onClick={handleCreateBoard}
               variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             >
               <Plus className="w-4 h-4 mr-2" />
               New Board
@@ -93,11 +96,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             <Button
               onClick={handleCreateBoard}
               variant="ghost"
-              size="sm"
-              className="w-full aspect-square p-0"
+              className="w-12 h-12 p-0 mx-auto flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors"
               title="New Board"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-5 h-5" />
             </Button>
           )}
 
@@ -109,15 +111,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 onClick={() => setCurrentBoard(board.id)}
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start text-left",
+                  collapsed ? "w-12 h-12 p-0 mx-auto flex items-center justify-center" : "w-full justify-start text-left",
                   currentBoard?.id === board.id
                     ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "hover:bg-muted/50"
+                    : "hover:bg-muted/50",
+                  "transition-colors"
                 )}
                 title={collapsed ? board.title : undefined}
               >
                 {collapsed ? (
-                  <Trello className="w-4 h-4" />
+                  <Trello className="w-5 h-5" />
                 ) : (
                   <>
                     <Trello className="w-4 h-4 mr-2 flex-shrink-0" />

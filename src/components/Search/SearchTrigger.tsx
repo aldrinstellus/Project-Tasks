@@ -32,12 +32,12 @@ export function SearchTrigger({ onClick, className }: SearchTriggerProps) {
         className
       )}
     >
-      <Search className="w-4 h-4 flex-shrink-0 text-white dark:text-foreground" />
-      <span className="hidden sm:inline text-sm text-white dark:text-foreground opacity-80 group-hover:opacity-100">
+      <Search className="w-4 h-4 flex-shrink-0 text-white/90" />
+      <span className="hidden sm:inline text-sm text-white/80 group-hover:text-white">
         Search...
       </span>
       <div className="hidden sm:flex items-center gap-1 ml-auto">
-        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border border-white/30 dark:border-border/30 bg-white/20 dark:bg-background/30 px-1.5 font-mono text-[10px] font-medium text-white dark:text-foreground opacity-70">
+        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border border-white/30 bg-white/10 px-1.5 font-mono text-[10px] font-medium text-white/70">
           <span className="text-xs">⌘</span>K
         </kbd>
       </div>

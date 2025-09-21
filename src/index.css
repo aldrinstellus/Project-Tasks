@@ -158,17 +158,7 @@
   }
 
   .btn-ghost-hover {
-    @apply hover:bg-black/10 active:bg-black/15 transition-[var(--transition-smooth)] text-white hover:text-white;
-  }
-  
-  /* Background Gradients */
-  .bg-gradient-header {
-    background: var(--gradient-header);
-  }
-
-  /* Dark mode overrides for header */
-  .dark .btn-ghost-hover {
-    @apply hover:bg-white/10 active:bg-white/20 text-white/90 hover:text-white;
+    @apply hover:bg-white/10 active:bg-white/20 text-white/90 hover:text-white transition-[var(--transition-smooth)];
   }
 
   /* Animation Classes */
@@ -198,4 +188,9 @@
 @keyframes bounceIn {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* Background Gradients */
+.bg-gradient-header {
+  background: var(--gradient-header);
 }
