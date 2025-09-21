@@ -28,16 +28,16 @@ export function SearchTrigger({ onClick, className }: SearchTriggerProps) {
       size="sm"
       onClick={onClick}
       className={cn(
-        "btn-ghost-hover group relative flex items-center justify-center gap-3 min-w-[200px] px-4",
+        "btn-ghost-hover group relative flex items-center justify-center gap-3 min-w-[200px] px-4 bg-background/10 border border-border/20 backdrop-blur-sm",
         className
       )}
     >
       <Search className="w-4 h-4 flex-shrink-0" />
-      <span className="hidden sm:inline text-sm opacity-70 group-hover:opacity-100">
+      <span className="hidden sm:inline text-sm opacity-80 group-hover:opacity-100">
         Search...
       </span>
       <div className="hidden sm:flex items-center gap-1 ml-auto">
-        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted/20 px-1.5 font-mono text-[10px] font-medium opacity-60">
+        <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border border-border/30 bg-background/30 px-1.5 font-mono text-[10px] font-medium opacity-70">
           <span className="text-xs">⌘</span>K
         </kbd>
       </div>
