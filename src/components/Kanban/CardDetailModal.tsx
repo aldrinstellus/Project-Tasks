@@ -21,6 +21,11 @@ import {
   Trash2,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 interface CardDetailModalProps {
   card: CardType;
@@ -127,15 +132,21 @@ export function CardDetailModal({ card, isOpen, onClose }: CardDetailModalProps)
             {card.labels && card.labels.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {card.labels.map((label) => (
-                  <Badge
-                    key={label.id}
-                    variant="secondary"
-                    className={`${labelColors[label.color]} cursor-pointer hover:opacity-80`}
-                    onClick={() => handleRemoveLabel(label.id)}
-                  >
-                    {label.title}
-                    <X className="w-3 h-3 ml-1" />
-                  </Badge>
+                  <Tooltip key={label.id}>
+                    <TooltipTrigger asChild>
+                      <Badge
+                        variant="secondary"
+                        className={`${labelColors[label.color]} cursor-pointer hover:opacity-80`}
+                        onClick={() => handleRemoveLabel(label.id)}
+                      >
+                        {label.title}
+                        <X className="w-3 h-3 ml-1" />
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Remove {label.title} label</p>
+                    </TooltipContent>
+                  </Tooltip>
                 ))}
               </div>
             )}
@@ -144,16 +155,22 @@ export function CardDetailModal({ card, isOpen, onClose }: CardDetailModalProps)
               {availableLabels
                 .filter(label => !card.labels?.some(l => l.id === label.id))
                 .map((label) => (
-                  <Button
-                    key={label.id}
-                    variant="outline"
-                    size="sm"
-                    className="h-7"
-                    onClick={() => handleAddLabel(label)}
-                  >
-                    <div className={`w-2 h-2 rounded-full mr-2 ${labelColors[label.color]}`} />
-                    {label.title}
-                  </Button>
+                  <Tooltip key={label.id}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7"
+                        onClick={() => handleAddLabel(label)}
+                      >
+                        <div className={`w-2 h-2 rounded-full mr-2 ${labelColors[label.color]}`} />
+                        {label.title}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add {label.title} label</p>
+                    </TooltipContent>
+                  </Tooltip>
                 ))}
             </div>
           </div>
@@ -198,30 +215,51 @@ export function CardDetailModal({ card, isOpen, onClose }: CardDetailModalProps)
               </Popover>
               
               {dueDate && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setDueDate(undefined)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDueDate(undefined)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Remove due date</p>
+                  </TooltipContent>
+                </Tooltip>
               )}
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex justify-between pt-4 border-t">
-            <Button variant="outline" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={!title.trim() || !hasChanges}
-              className="btn-primary"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Discard changes (Esc)</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleSave}
+                  disabled={!title.trim() || !hasChanges}
+                  className="btn-primary"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Save changes (Ctrl+S)</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </DialogContent>

@@ -5,6 +5,11 @@ import { useKanbanStore } from '@/store/kanban-store';
 import { KanbanList } from './KanbanList';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 
 export function KanbanBoard() {
@@ -276,14 +281,21 @@ export function KanbanBoard() {
             </SortableContext>
 
             <div className="flex-shrink-0">
-              <Button
-                onClick={handleAddList}
-                variant="outline"
-                className="w-80 h-12 border-dashed border-2 hover:bg-muted/50 transition-colors"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add another list
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={handleAddList}
+                    variant="outline"
+                    className="w-80 h-12 border-dashed border-2 hover:bg-muted/50 transition-colors"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add another list
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add a new list to this board</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>

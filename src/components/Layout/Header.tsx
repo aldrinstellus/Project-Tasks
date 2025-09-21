@@ -8,6 +8,11 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 import { useKanbanStore } from '@/store/kanban-store';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
@@ -67,28 +72,42 @@ export function Header() {
           <div className="flex items-center space-x-3">
             <SearchTrigger onClick={() => setSearchOpen(true)} />
             
-            <Button
-              onClick={handleCreateBoard}
-              size="sm"
-              className="btn-primary"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Board
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleCreateBoard}
+                  size="sm"
+                  className="btn-primary"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Board
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Create a new board (Ctrl+B)</p>
+              </TooltipContent>
+            </Tooltip>
 
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="btn-ghost-hover">
-                  <Avatar className="w-6 h-6">
-                    {profile?.avatar_url && (
-                      <AvatarImage src={profile.avatar_url} alt={profile.display_name || 'User'} />
-                    )}
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="btn-ghost-hover">
+                      <Avatar className="w-6 h-6">
+                        {profile?.avatar_url && (
+                          <AvatarImage src={profile.avatar_url} alt={profile.display_name || 'User'} />
+                        )}
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Account menu</p>
+                </TooltipContent>
+              </Tooltip>
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-2 py-2 text-sm">
                   <p className="font-medium">{profile?.display_name || 'User'}</p>

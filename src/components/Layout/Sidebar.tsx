@@ -14,6 +14,11 @@ import {
   Edit2
 } from 'lucide-react';
 import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -59,22 +64,28 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               <span className="font-semibold text-sm">Boards</span>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggle}
-            className={cn(
-              "btn-ghost-hover hover:bg-primary/10 transition-colors",
-              collapsed ? "w-12 h-12 p-0" : ""
-            )}
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {collapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <ChevronLeft className="w-4 h-4" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggle}
+                className={cn(
+                  "btn-ghost-hover hover:bg-primary/10 transition-colors",
+                  collapsed ? "w-12 h-12 p-0" : ""
+                )}
+              >
+                {collapsed ? (
+                  <ChevronRight className="w-4 h-4" />
+                ) : (
+                  <ChevronLeft className="w-4 h-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{collapsed ? "Expand sidebar" : "Collapse sidebar"}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -93,53 +104,82 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           )}
           
           {collapsed && (
-            <Button
-              onClick={handleCreateBoard}
-              variant="ghost"
-              className="w-12 h-12 p-0 mx-auto flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors"
-              title="New Board"
-            >
-              <Plus className="w-5 h-5" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={handleCreateBoard}
+                  variant="ghost"
+                  className="w-12 h-12 p-0 mx-auto flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Create new board</p>
+              </TooltipContent>
+            </Tooltip>
           )}
 
           {boards.length > 0 && !collapsed && <Separator className="my-2" />}
 
           {boards.map((board) => (
             <div key={board.id} className="group relative">
-              <Button
-                onClick={() => setCurrentBoard(board.id)}
-                variant="ghost"
-                className={cn(
-                  collapsed ? "w-12 h-12 p-0 mx-auto flex items-center justify-center" : "w-full justify-start text-left",
-                  currentBoard?.id === board.id
-                    ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "hover:bg-muted/50",
-                  "transition-colors"
-                )}
-                title={collapsed ? board.title : undefined}
-              >
-                {collapsed ? (
-                  <Trello className="w-5 h-5" />
-                ) : (
-                  <>
-                    <Trello className="w-4 h-4 mr-2 flex-shrink-0" />
-                    <span className="truncate">{board.title}</span>
-                  </>
-                )}
-              </Button>
+              {collapsed ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => setCurrentBoard(board.id)}
+                      variant="ghost"
+                      className={cn(
+                        "w-12 h-12 p-0 mx-auto flex items-center justify-center",
+                        currentBoard?.id === board.id
+                          ? "bg-primary/10 text-primary hover:bg-primary/20"
+                          : "hover:bg-muted/50",
+                        "transition-colors"
+                      )}
+                    >
+                      <Trello className="w-5 h-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{board.title}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Button
+                  onClick={() => setCurrentBoard(board.id)}
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start text-left",
+                    currentBoard?.id === board.id
+                      ? "bg-primary/10 text-primary hover:bg-primary/20"
+                      : "hover:bg-muted/50",
+                    "transition-colors"
+                  )}
+                >
+                  <Trello className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">{board.title}</span>
+                </Button>
+              )}
 
               {!collapsed && (
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <MoreHorizontal className="w-3 h-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <MoreHorizontal className="w-3 h-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Board options</p>
+                    </TooltipContent>
+                  </Tooltip>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
                       onClick={() => handleDeleteBoard(board.id, board.title)}

@@ -14,6 +14,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useKanbanStore } from '@/store/kanban-store';
 import { CardDetailModal } from './CardDetailModal';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 interface KanbanCardProps {
   card: CardType;
@@ -107,26 +112,45 @@ export function KanbanCard({ card, isDragging }: KanbanCardProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {card.dueDate && (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Calendar className="w-3 h-3" />
-                    <span>
-                      {new Date(card.dueDate).toLocaleDateString()}
-                    </span>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground cursor-help">
+                        <Calendar className="w-3 h-3" />
+                        <span>
+                          {new Date(card.dueDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Due: {new Date(card.dueDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </div>
 
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreHorizontal className="w-3 h-3" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreHorizontal className="w-3 h-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Card actions</p>
+                  </TooltipContent>
+                </Tooltip>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={handleEditCard}>
                     <Edit2 className="w-4 h-4 mr-2" />

@@ -15,6 +15,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 interface KanbanListProps {
   list: List;
@@ -109,11 +114,18 @@ export function KanbanList({ list, activeCardId }: KanbanListProps) {
           )}
           
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                <MoreHorizontal className="w-3 h-3" />
-              </Button>
-            </DropdownMenuTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <MoreHorizontal className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>List actions</p>
+              </TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
                 <Edit2 className="w-4 h-4 mr-2" />
@@ -178,14 +190,21 @@ export function KanbanList({ list, activeCardId }: KanbanListProps) {
               </div>
             </Card>
           ) : (
-            <Button
-              onClick={() => setIsAddingCard(true)}
-              variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add a card
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsAddingCard(true)}
+                  variant="ghost"
+                  className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add a card
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add a new card to this list</p>
+              </TooltipContent>
+            </Tooltip>
           )}
         </CardContent>
       </Card>
