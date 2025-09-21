@@ -90,7 +90,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </div>
 
       {/* Boards List */}
-      <ScrollArea className={cn("flex-1", collapsed ? "p-2" : "p-2")}>
+      <ScrollArea className={cn("flex-1", collapsed ? "p-2" : "p-4")}>
         <div className={cn("space-y-1", collapsed ? "space-y-2" : "")}>
           {!collapsed && (
             <Button
