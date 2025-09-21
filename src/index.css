@@ -6,79 +6,7 @@
 
 @layer base {
   :root {
-    /* Core Colors - Professional Blue-Gray Theme */
-    --background: 0 0% 98%;
-    --foreground: 215 25% 27%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-
-    /* Primary - Professional Blue */
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 217 91% 55%;
-
-    /* Secondary - Light Gray */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 27%;
-
-    --muted: 215 20% 95%;
-    --muted-foreground: 215 15% 50%;
-
-    --accent: 210 100% 97%;
-    --accent-foreground: 215 25% 27%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
-
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-
-    --border: 215 20% 89%;
-    --input: 215 20% 89%;
-    --ring: 217 91% 60%;
-
-    --radius: 0.5rem;
-
-    /* Custom Design Tokens */
-    --shadow-card: 0 2px 8px -2px hsl(215 25% 27% / 0.08);
-    --shadow-card-hover: 0 4px 12px -2px hsl(215 25% 27% / 0.15);
-    --shadow-modal: 0 25px 50px -12px hsl(215 25% 27% / 0.25);
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 65%));
-    --gradient-header: linear-gradient(135deg, hsl(217 91% 60%), hsl(230 91% 65%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 99%));
-    
-    /* Animations */
-    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    /* Dark Mode - Elegant Dark Theme */
+    /* Dark Mode - Elegant Dark Theme (Default and Only Mode) */
     --background: 215 28% 9%;
     --foreground: 213 31% 91%;
 
@@ -88,6 +16,7 @@
     --popover: 215 25% 12%;
     --popover-foreground: 213 31% 91%;
 
+    /* Primary - Professional Blue */
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 217 91% 65%;
@@ -114,15 +43,22 @@
     --input: 215 25% 18%;
     --ring: 217 91% 60%;
 
-    /* Dark Mode Shadows */
+    --radius: 0.5rem;
+
+    /* Custom Design Tokens */
     --shadow-card: 0 2px 8px -2px hsl(215 25% 5% / 0.4);
     --shadow-card-hover: 0 4px 12px -2px hsl(215 25% 5% / 0.6);
     --shadow-modal: 0 25px 50px -12px hsl(215 25% 5% / 0.8);
     
-    /* Dark Mode Gradients */
+    /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 65%));
     --gradient-header: linear-gradient(135deg, hsl(215 25% 12%), hsl(215 25% 16%));
     --gradient-card: linear-gradient(135deg, hsl(215 25% 12%), hsl(215 25% 14%));
+    
+    /* Animations */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

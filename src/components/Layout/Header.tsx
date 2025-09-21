@@ -1,4 +1,4 @@
-import { Moon, Sun, Plus, Settings, User, LogOut } from 'lucide-react';
+import { Plus, Settings, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,27 +10,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useKanbanStore } from '@/store/kanban-store';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SearchModal } from '@/components/Search/SearchModal';
 import { SearchTrigger } from '@/components/Search/SearchTrigger';
 
 export function Header() {
-  const [darkMode, setDarkMode] = useState(true); // Default to dark mode
   const [searchOpen, setSearchOpen] = useState(false);
   const { currentBoard, createBoard } = useKanbanStore();
   const { user, profile, signOut } = useAuth();
-
-  useEffect(() => {
-    // Always set dark mode as default
-    setDarkMode(true);
-    document.documentElement.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  }, []);
-
-  const toggleDarkMode = () => {
-    // Disable light mode - do nothing
-    return;
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -87,20 +74,6 @@ export function Header() {
             >
               <Plus className="w-4 h-4 mr-2" />
               New Board
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleDarkMode}
-              className="btn-ghost-hover cursor-not-allowed opacity-50"
-              disabled
-            >
-              {darkMode ? (
-                <Sun className="w-4 h-4 opacity-30" />
-              ) : (
-                <Moon className="w-4 h-4" />
-              )}
             </Button>
 
             <DropdownMenu>
