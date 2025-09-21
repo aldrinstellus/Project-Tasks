@@ -53,7 +53,8 @@ export function Header() {
   return (
     <header className="bg-gradient-header border-b border-border/50 shadow-sm w-full sticky top-0 z-50">
       <div className="w-full pl-4 pr-4 sm:pr-6 lg:pr-8 py-3">
-        <div className="flex items-center justify-between">
+        <div className="grid grid-cols-3 items-center w-full gap-4">
+          {/* Left Section - Logo & Navigation */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -62,16 +63,20 @@ export function Header() {
               <h1 className="text-xl font-bold text-white">Project Tasks</h1>
             </div>
             {currentBoard && (
-              <div className="hidden md:flex items-center space-x-2 text-sm text-white/80">
+              <div className="hidden lg:flex items-center space-x-2 text-sm text-white/80">
                 <span>/</span>
                 <span className="font-medium text-white">{currentBoard.title}</span>
               </div>
             )}
           </div>
 
-          <div className="flex items-center space-x-3">
+          {/* Center Section - Prominent Search */}
+          <div className="flex justify-center">
             <SearchTrigger onClick={() => setSearchOpen(true)} />
-            
+          </div>
+
+          {/* Right Section - Actions & User */}
+          <div className="flex items-center justify-end space-x-3">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -79,8 +84,8 @@ export function Header() {
                   size="sm"
                   className="btn-primary"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Board
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">New Board</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

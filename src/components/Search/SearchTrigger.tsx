@@ -28,15 +28,17 @@ export function SearchTrigger({ onClick, className }: SearchTriggerProps) {
       size="sm"
       onClick={onClick}
       className={cn(
-        "btn-ghost-hover group relative flex items-center justify-center gap-3 min-w-[200px] px-4 bg-background/10 border border-gray-400/50 backdrop-blur-sm",
+        "btn-ghost-hover group relative flex items-center justify-between w-full max-w-md sm:max-w-lg lg:max-w-xl px-4 py-2.5 bg-background/10 border border-gray-400/50 backdrop-blur-sm rounded-lg hover:bg-background/20 transition-all",
         className
       )}
     >
-      <Search className="w-4 h-4 flex-shrink-0 text-white/90" />
-      <span className="hidden sm:inline text-sm text-white/80 group-hover:text-white">
-        Search...
-      </span>
-      <div className="hidden sm:flex items-center gap-1 ml-auto">
+      <div className="flex items-center gap-3">
+        <Search className="w-4 h-4 flex-shrink-0 text-white/90" />
+        <span className="text-sm text-white/70 group-hover:text-white/90 text-left">
+          Search boards, lists, and cards...
+        </span>
+      </div>
+      <div className="flex items-center gap-1">
         <kbd className="pointer-events-none h-5 select-none items-center gap-1 rounded border border-white/30 bg-white/10 px-1.5 font-mono text-[10px] font-medium text-white/70">
           <span className="text-xs">⌘</span>K
         </kbd>
