@@ -222,7 +222,7 @@
   }
 
   .btn-ghost-hover {
-    @apply hover:bg-white/10 active:bg-white/20 transition-[var(--transition-smooth)] text-white/80 hover:text-white;
+    @apply hover:bg-black/10 active:bg-black/20 transition-[var(--transition-smooth)] text-foreground/80 hover:text-foreground;
   }
   
   /* Background Gradients */
