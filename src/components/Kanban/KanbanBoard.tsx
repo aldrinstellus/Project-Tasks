@@ -1,8 +1,27 @@
-import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, closestCorners } from '@dnd-kit/core';
-import { arrayMove, SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+import { 
+  DndContext, 
+  DragEndEvent, 
+  DragOverEvent, 
+  DragStartEvent, 
+  closestCorners,
+  DragOverlay,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  defaultDropAnimationSideEffects
+} from '@dnd-kit/core';
+import { 
+  arrayMove, 
+  SortableContext, 
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates
+} from '@dnd-kit/sortable';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useKanbanStore } from '@/store/kanban-store';
 import { KanbanList } from './KanbanList';
+import { KanbanCard } from './KanbanCard';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import {
@@ -10,15 +29,37 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from '@/components/ui/tooltip';
+import { Card as CardType } from '@/types/kanban';
 
 
 export function KanbanBoard() {
   const { currentBoard, moveCard, createList } = useKanbanStore();
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeCard, setActiveCard] = useState<CardType | null>(null);
   const [isPanning, setIsPanning] = useState(false);
   const [lastPanPoint, setLastPanPoint] = useState({ x: 0, y: 0 });
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>();
+  const autoScrollRef = useRef<number>();
+
+  // Enhanced sensors for better mobile and accessibility support
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Minimum distance before drag starts
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200, // Delay before touch drag starts
+        tolerance: 5, // Touch tolerance
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Enhanced horizontal scrolling with mouse wheel and trackpad
   useEffect(() => {
@@ -125,6 +166,9 @@ export function KanbanBoard() {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
+      if (autoScrollRef.current) {
+        cancelAnimationFrame(autoScrollRef.current);
+      }
     };
   }, []);
 
@@ -187,14 +231,39 @@ export function KanbanBoard() {
   }
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+    const id = event.active.id as string;
+    setActiveId(id);
+    
+    // Find the active card for drag overlay
+    if (id.startsWith('card-')) {
+      const cardId = id.replace('card-', '');
+      for (const list of currentBoard.lists) {
+        const card = list.cards.find(c => c.id === cardId);
+        if (card) {
+          setActiveCard(card);
+          break;
+        }
+      }
+    }
+    
+    // Start auto-scroll detection
+    setIsAutoScrolling(true);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     
+    // Clean up drag state
+    setActiveId(null);
+    setActiveCard(null);
+    setIsAutoScrolling(false);
+    
+    // Cancel auto-scroll
+    if (autoScrollRef.current) {
+      cancelAnimationFrame(autoScrollRef.current);
+    }
+    
     if (!over) {
-      setActiveId(null);
       return;
     }
 
@@ -222,12 +291,58 @@ export function KanbanBoard() {
         }
       }
     }
-
-    setActiveId(null);
   };
 
   const handleDragOver = (event: DragOverEvent) => {
-    // Handle drag over logic for better visual feedback if needed
+    // Auto-scroll when dragging near edges
+    if (!isAutoScrolling || !scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const rect = container.getBoundingClientRect();
+    const scrollThreshold = 100; // Distance from edge to trigger auto-scroll
+    const scrollSpeed = 10; // Pixels per frame
+    
+    if (event.activatorEvent) {
+      const activatorEvent = event.activatorEvent as MouseEvent | TouchEvent;
+      let clientX: number | undefined;
+      
+      if ('touches' in activatorEvent && activatorEvent.touches.length > 0) {
+        clientX = activatorEvent.touches[0].clientX;
+      } else if ('clientX' in activatorEvent) {
+        clientX = activatorEvent.clientX;
+      }
+      
+      if (clientX) {
+        const distanceFromLeft = clientX - rect.left;
+        const distanceFromRight = rect.right - clientX;
+        
+        let scrollDirection = 0;
+        
+        if (distanceFromLeft < scrollThreshold && container.scrollLeft > 0) {
+          scrollDirection = -scrollSpeed;
+        } else if (distanceFromRight < scrollThreshold && 
+                   container.scrollLeft < container.scrollWidth - container.clientWidth) {
+          scrollDirection = scrollSpeed;
+        }
+        
+        if (scrollDirection !== 0) {
+          // Cancel previous animation frame
+          if (autoScrollRef.current) {
+            cancelAnimationFrame(autoScrollRef.current);
+          }
+          
+          // Start auto-scroll animation
+          const autoScroll = () => {
+            if (container && isAutoScrolling) {
+              container.scrollLeft += scrollDirection;
+              autoScrollRef.current = requestAnimationFrame(autoScroll);
+            }
+          };
+          
+          autoScrollRef.current = requestAnimationFrame(autoScroll);
+        }
+      }
+    }
   };
 
   const handleAddList = () => {
@@ -252,10 +367,31 @@ export function KanbanBoard() {
       </div>
 
       <DndContext
+        sensors={sensors}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
         collisionDetection={closestCorners}
+        accessibility={{
+          announcements: {
+            onDragStart: ({ active }) => {
+              return `Picked up ${active.data.current?.type || 'item'}.`;
+            },
+            onDragOver: ({ active, over }) => {
+              if (!over) return '';
+              return `${active.data.current?.type || 'Item'} is over ${over.data.current?.type || 'area'}.`;
+            },
+            onDragEnd: ({ active, over }) => {
+              if (!over) {
+                return `${active.data.current?.type || 'Item'} was dropped.`;
+              }
+              return `${active.data.current?.type || 'Item'} was dropped over ${over.data.current?.type || 'area'}.`;
+            },
+            onDragCancel: ({ active }) => {
+              return `${active.data.current?.type || 'Item'} drag was cancelled.`;
+            },
+          },
+        }}
       >
         <div 
           ref={scrollContainerRef} 
@@ -299,6 +435,28 @@ export function KanbanBoard() {
             </div>
           </div>
         </div>
+        
+        {/* Enhanced Drag Overlay with animations */}
+        <DragOverlay
+          dropAnimation={{
+            sideEffects: defaultDropAnimationSideEffects({
+              styles: {
+                active: {
+                  opacity: '0.5',
+                },
+              },
+            }),
+          }}
+        >
+          {activeCard && (
+            <div className="transform rotate-3 scale-105 shadow-2xl ring-2 ring-primary/20">
+              <KanbanCard 
+                card={activeCard} 
+                isDragging={true}
+              />
+            </div>
+          )}
+        </DragOverlay>
       </DndContext>
     </div>
   );
