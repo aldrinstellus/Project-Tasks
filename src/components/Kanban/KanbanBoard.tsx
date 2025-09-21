@@ -254,7 +254,7 @@ export function KanbanBoard() {
       >
         <div 
           ref={scrollContainerRef} 
-          className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-thin cursor-grab active:cursor-grabbing select-none"
+          className="flex gap-6 pb-6 overflow-x-auto overflow-y-hidden min-h-0 scrollbar-hidden cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}

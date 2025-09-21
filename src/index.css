@@ -185,6 +185,16 @@
   .scrollbar-thin::-webkit-scrollbar-corner {
     background: hsl(var(--background));
   }
+
+  /* Hidden Scrollbars - Maintains functionality but invisible */
+  .scrollbar-hidden {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
 }
 
 @layer components {
