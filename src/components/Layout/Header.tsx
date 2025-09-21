@@ -52,7 +52,7 @@ export function Header() {
 
   return (
     <header className="bg-gradient-header border-b border-border/50 shadow-sm w-full sticky top-0 z-50">
-      <div className="w-full pl-4 pr-4 sm:pr-6 lg:pr-8 py-3">
+      <div className="w-full px-4 py-3">
         <div className="grid grid-cols-3 items-center w-full gap-4">
           {/* Left Section - Logo & Navigation */}
           <div className="flex items-center space-x-4">
@@ -76,7 +76,7 @@ export function Header() {
           </div>
 
           {/* Right Section - Actions & User */}
-          <div className="flex items-center justify-end space-x-3">
+          <div className="flex items-center justify-end space-x-4">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
