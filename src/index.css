@@ -202,6 +202,11 @@
     @apply hover:bg-white/10 active:bg-white/20 transition-[var(--transition-smooth)] text-white/80 hover:text-white;
   }
   
+  /* Background Gradients */
+  .bg-gradient-header {
+    background: var(--gradient-header);
+  }
+
   /* Dark mode overrides for header */
   .dark .btn-ghost-hover {
     @apply hover:bg-white/10 active:bg-white/20 text-white/90 hover:text-white;
