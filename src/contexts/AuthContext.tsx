@@ -147,6 +147,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             access_type: 'offline',
             prompt: 'consent',
           },
+          // Important: avoid redirecting inside the Lovable iframe
+          skipBrowserRedirect: true,
         }
       });
 
@@ -157,11 +159,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        console.log('Google sign in initiated successfully');
+        return { error };
       }
 
-      return { error };
+      if (data?.url) {
+        // Force top-level navigation so Google can render outside the iframe
+        try {
+          (window.top ?? window).location.href = data.url;
+        } catch (_) {
+          window.location.href = data.url;
+        }
+        return { error: null } as { error: AuthError | null };
+      }
+
+      console.warn('No OAuth URL returned from Supabase.');
+      toast({
+        title: "Google Sign In",
+        description: "Could not initiate Google sign in. Please try again.",
+      });
+      return { error: null } as { error: AuthError | null };
     } catch (err) {
       console.error('Unexpected error during Google sign in:', err);
       toast({
