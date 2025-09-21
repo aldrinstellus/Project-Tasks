@@ -139,6 +139,19 @@
     @apply border-border;
   }
 
+  /* Hide browser scrollbars globally while maintaining functionality */
+  html, body {
+    overflow-x: auto;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
