@@ -65,7 +65,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-gradient-header border-b border-border/50 shadow-sm w-full">
+    <header className="bg-gradient-header border-b border-border/50 shadow-sm w-full sticky top-0 z-50">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { 
-  PanelLeft, 
+  ChevronLeft,
+  ChevronRight,
   Trello, 
   Plus, 
   MoreHorizontal,
@@ -62,9 +63,14 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             variant="ghost"
             size="sm"
             onClick={onToggle}
-            className="btn-ghost-hover"
+            className="btn-ghost-hover hover:bg-primary/10"
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <PanelLeft className="w-4 h-4" />
+            {collapsed ? (
+              <ChevronRight className="w-4 h-4" />
+            ) : (
+              <ChevronLeft className="w-4 h-4" />
+            )}
           </Button>
         </div>
       </div>
