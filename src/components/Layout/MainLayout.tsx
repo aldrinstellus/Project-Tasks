@@ -3,6 +3,8 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { KanbanBoard } from '@/components/Kanban/KanbanBoard';
 import { ListView } from '@/components/Kanban/ListView';
+import { BoardStats } from '@/components/Analytics/BoardStats';
+import { RecentActivity } from '@/components/Activity/RecentActivity';
 import { useKanbanStore } from '@/store/kanban-store';
 import { useAuth } from '@/contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
@@ -53,7 +55,17 @@ export function MainLayout() {
         />
         
         <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
-          {viewMode === 'kanban' ? <KanbanBoard /> : <ListView />}
+          <div className="p-6 space-y-6 overflow-auto">
+            <BoardStats />
+            <div className="flex gap-6 h-full overflow-hidden">
+              <div className="flex-1">
+                {viewMode === 'kanban' ? <KanbanBoard /> : <ListView />}
+              </div>
+              <div className="w-80 hidden xl:block">
+                <RecentActivity />
+              </div>
+            </div>
+          </div>
         </main>
       </div>
 

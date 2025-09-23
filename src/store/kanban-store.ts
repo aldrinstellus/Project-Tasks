@@ -3,13 +3,13 @@ import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 import { Board, List, Card, Label, BoardState, ViewMode } from '@/types/kanban';
+import { initializeDummyData } from '@/data/dummyData';
 
 export const useKanbanStore = create<BoardState>()(
   persist(
     (set, get) => ({
-      boards: [],
-      currentBoard: null,
-      viewMode: 'kanban' as ViewMode,
+      // Initialize with dummy data for demo purposes
+      ...initializeDummyData('demo-user-id'),
 
       // View actions
       setViewMode: (mode: ViewMode) => {
@@ -118,11 +118,22 @@ export const useKanbanStore = create<BoardState>()(
 
       loadUserBoards: (userId: string) => {
         const state = get();
-        const userBoards = state.boards.filter(board => board.userId === userId);
-        set({ 
-          boards: userBoards,
-          currentBoard: userBoards.length > 0 ? userBoards[0] : null
-        });
+        let userBoards = state.boards.filter(board => board.userId === userId);
+        
+        // If no boards exist for user, initialize with dummy data
+        if (userBoards.length === 0 && userId) {
+          const dummyData = initializeDummyData(userId);
+          userBoards = dummyData.boards;
+          set({ 
+            boards: [...state.boards, ...userBoards],
+            currentBoard: userBoards[0] || null
+          });
+        } else {
+          set({ 
+            boards: userBoards,
+            currentBoard: userBoards.length > 0 ? userBoards[0] : null
+          });
+        }
       },
 
       // List actions
