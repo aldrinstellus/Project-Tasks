@@ -179,7 +179,11 @@ function getUserInitials(name: string): string {
     .slice(0, 2);
 }
 
-export function RecentActivity() {
+interface RecentActivityProps {
+  boardId?: string;
+}
+
+export function RecentActivity({ boardId }: RecentActivityProps = {}) {
   const { currentBoard } = useKanbanStore();
   const activities = generateMockActivity();
 
