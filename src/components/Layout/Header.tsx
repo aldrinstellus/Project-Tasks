@@ -18,6 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { SearchModal } from '@/components/Search/SearchModal';
 import { SearchTrigger } from '@/components/Search/SearchTrigger';
+import { ViewToggle } from './ViewToggle';
 
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -77,6 +78,9 @@ export function Header() {
 
           {/* Right Section - Actions & User */}
           <div className="flex items-center justify-end space-x-4">
+            {/* View Toggle */}
+            <ViewToggle />
+            
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

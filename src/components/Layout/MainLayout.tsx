@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { KanbanBoard } from '@/components/Kanban/KanbanBoard';
+import { ListView } from '@/components/Kanban/ListView';
 import { useKanbanStore } from '@/store/kanban-store';
 import { useAuth } from '@/contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
 export function MainLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { boards, createBoard, setCurrentBoard, loadUserBoards } = useKanbanStore();
+  const { boards, createBoard, setCurrentBoard, loadUserBoards, viewMode } = useKanbanStore();
   const { user } = useAuth();
 
   // Initialize with user boards or create a default board
@@ -52,7 +53,7 @@ export function MainLayout() {
         />
         
         <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
-          <KanbanBoard />
+          {viewMode === 'kanban' ? <KanbanBoard /> : <ListView />}
         </main>
       </div>
 

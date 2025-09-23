@@ -2,13 +2,19 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
-import { Board, List, Card, Label, BoardState } from '@/types/kanban';
+import { Board, List, Card, Label, BoardState, ViewMode } from '@/types/kanban';
 
 export const useKanbanStore = create<BoardState>()(
   persist(
     (set, get) => ({
       boards: [],
       currentBoard: null,
+      viewMode: 'kanban' as ViewMode,
+
+      // View actions
+      setViewMode: (mode: ViewMode) => {
+        set({ viewMode: mode });
+      },
 
       // Board actions
       createBoard: (title: string, userId: string) => {
@@ -424,6 +430,7 @@ export const useKanbanStore = create<BoardState>()(
       partialize: (state) => ({
         boards: state.boards,
         currentBoard: state.currentBoard,
+        viewMode: state.viewMode,
       }),
     }
   )

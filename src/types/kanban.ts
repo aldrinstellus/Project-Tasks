@@ -31,9 +31,15 @@ export interface Board {
   userId: string; // Add userId to associate boards with users
 }
 
+export type ViewMode = 'kanban' | 'list';
+
 export interface BoardState {
   boards: Board[];
   currentBoard: Board | null;
+  viewMode: ViewMode;
+  
+  // View actions
+  setViewMode: (mode: ViewMode) => void;
   
   // Board actions
   createBoard: (title: string, userId: string) => void;
